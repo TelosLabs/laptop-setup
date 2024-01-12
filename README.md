@@ -113,7 +113,7 @@ Gems
 
 * [Rails] our main web framework
 
-[[Rails]: http://rubyonrails.org/]
+[Rails]: http://rubyonrails.org/
 
 ----------------
 
