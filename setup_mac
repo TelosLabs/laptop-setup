@@ -6,7 +6,7 @@
 
 # shellcheck disable=SC3043
 
-# This helper  
+# This helper
 fancy_echo() {
   local fmt="$1"; shift
 
@@ -33,8 +33,31 @@ append_to_zshrc() {
   fi
 }
 
+install_asdf_language() {
+  local language="$1"
+  local version
+  version="$(asdf list-all "$language" | grep -v "[a-z]" | tail -1)"
+
+  if ! asdf list "$language" | grep -Fq "$version"; then
+    asdf install "$language" "$version"
+    asdf global "$language" "$version"
+  fi
+}
+
+alias install_asdf_plugin=add_or_update_asdf_plugin
+add_or_update_asdf_plugin() {
+  local name="$1"
+  local url="$2"
+
+  if ! asdf plugin-list | grep -Fq "$name"; then
+    asdf plugin-add "$name" "$url"
+  else
+    asdf plugin-update "$name"
+  fi
+}
+
 # shellcheck disable=SC2154
-trap 'ret=$?; test $ret -ne 0 && printf "failed\n\n" >&2; exit $ret' EXIT
+# trap 'ret=$?; test $ret -ne 0 && printf "failed\n\n" >&2; exit $ret' EXIT
 
 set -e
 
@@ -93,7 +116,6 @@ if [ "$(uname -m)" = "arm64" ]
     echo "Rosetta is installed"
   fi
 fi
-
 
 gem_install_or_update() {
   if gem list "$1" --installed > /dev/null; then
@@ -165,48 +187,70 @@ fancy_echo "Update heroku binary ..."
 brew unlink heroku
 brew link --force heroku
 
-fancy_echo "Configuring asdf version manager ..."
-if [ ! -d "$HOME/.asdf" ]; then
-  brew install asdf
-  append_to_zshrc "source $(brew --prefix asdf)/libexec/asdf.sh" 1
-fi
+PS3='Please enter 1 if you want to use asdf: '
+options=("Yes" "No")
+select opt in "${options[@]}"
+do
+    case $opt in
+        "Yes")
+            fancy_echo "Configuring asdf version manager ..."
+            if [ ! -d "$HOME/.asdf" ]; then
+              brew install asdf
+              append_to_zshrc "source $(brew --prefix asdf)/libexec/asdf.sh" 1
+            fi
 
-alias install_asdf_plugin=add_or_update_asdf_plugin
-add_or_update_asdf_plugin() {
-  local name="$1"
-  local url="$2"
+            # shellcheck disable=SC1091
+            . "$(brew --prefix asdf)/libexec/asdf.sh"
+            add_or_update_asdf_plugin "ruby" "https://github.com/asdf-vm/asdf-ruby.git"
+            add_or_update_asdf_plugin "nodejs" "https://github.com/asdf-vm/asdf-nodejs.git"
 
-  if ! asdf plugin-list | grep -Fq "$name"; then
-    asdf plugin-add "$name" "$url"
-  else
-    asdf plugin-update "$name"
-  fi
-}
+            fancy_echo "Installing latest Ruby ..."
+            install_asdf_language "ruby"
+            break
+            ;;
+        "No")
+            # chsh -s $(which zsh)
+            # Installing rbenv
+            fancy_echo "Configuring rbenv ruby version manager ..."
 
-# shellcheck disable=SC1091
-. "$(brew --prefix asdf)/libexec/asdf.sh"
-add_or_update_asdf_plugin "ruby" "https://github.com/asdf-vm/asdf-ruby.git"
-add_or_update_asdf_plugin "nodejs" "https://github.com/asdf-vm/asdf-nodejs.git"
+            if [ ! -d "$HOME/.rbenv" ]; then
+              brew install rbenv
+              echo 'eval "$(rbenv init -)"' >> ~/.zshrc
+              else
+              fancy_echo "rbenv already installed"
+            fi
 
-install_asdf_language() {
-  local language="$1"
-  local version
-  version="$(asdf list-all "$language" | grep -v "[a-z]" | tail -1)"
+            # Installing nvm
+            fancy_echo "Configuring nvm node version manager ..."
+            
+            if [ ! -d "$HOME/.nvm" ]; then
+              brew install nvm
+              mkdir ~/.nvm
+            else
+              fancy_echo "nvm already installed"
+            fi
+fancy_echo "-Test"
+            export NVM_DIR=$HOME/.nvm
+            append_to_zshrc "source $(brew --prefix nvm)/nvm.sh" 1
+            append_to_zshrc "source ~/.zshrc" 1
+fancy_echo "-Test-2"
+            fancy_echo "Installing latest Ruby ..."
+            rbenv install -l
 
-  if ! asdf list "$language" | grep -Fq "$version"; then
-    asdf install "$language" "$version"
-    asdf global "$language" "$version"
-  fi
-}
+            fancy_echo "Installing latest Node ..."
+            nvm install --lts
+            break
+            ;;
+        *) echo "invalid option $REPLY";;
+    esac
+done
 
-fancy_echo "Installing latest Ruby ..."
-install_asdf_language "ruby"
+# Add parallel 
 gem update --system
 number_of_cores=$(sysctl -n hw.ncpu)
 bundle config --global jobs $((number_of_cores - 1))
 
-fancy_echo "Installing latest Node ..."
-install_asdf_language "nodejs"
+# install_asdf_language "nodejs"
 
 if [ -f "$HOME/.laptop.local" ]; then
   fancy_echo "Running your customizations from ~/.laptop.local ..."
