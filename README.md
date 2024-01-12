@@ -48,19 +48,12 @@ Unix tools:
 * [Universal Ctags] for indexing files for vim tab completion
 * [Git] for version control
 * [OpenSSL] for Transport Layer Security (TLS)
-* [RCM] for managing company and personal dotfiles
-* [The Silver Searcher] for finding things in files
 * [Tmux] for saving project state and switching between projects
-* [Watchman] for watching for filesystem events
 * [Zsh] as your shell
 
-[Universal Ctags]: https://ctags.io/
 [Git]: https://git-scm.com/
 [OpenSSL]: https://www.openssl.org/
-[RCM]: https://github.com/thoughtbot/rcm
-[The Silver Searcher]: https://github.com/ggreer/the_silver_searcher
 [Tmux]: http://tmux.github.io/
-[Watchman]: https://facebook.github.io/watchman/
 [Zsh]: http://www.zsh.org/
 
 Heroku tools:
@@ -89,6 +82,12 @@ Programming languages, package managers, and configuration:
 * [Yarn] for managing JavaScript packages
 * [Rosetta 2] for running tools that are not supported in Apple silicon processors
 
+GUI tools
+* [Slack] for team communication
+* [Krisp] for noise cancellation in calls
+* [Tuple] for pair programming
+* [Visual Studio Code] for writing code
+
 [Bundler]: http://bundler.io/
 [ImageMagick]: http://www.imagemagick.org/
 [Node.js]: http://nodejs.org/
@@ -97,6 +96,10 @@ Programming languages, package managers, and configuration:
 [Ruby]: https://www.ruby-lang.org/en/
 [Yarn]: https://yarnpkg.com/en/
 [Rosetta 2]: https://developer.apple.com/documentation/apple-silicon/about-the-rosetta-translation-environment
+[Slack]: https://slack.com/
+[Krisp]: https://krisp.ai/
+[Tuple]: https://tuple.app/
+[Visual Studio Code]: https://code.visualstudio.com/
 
 Databases:
 
@@ -106,50 +109,12 @@ Databases:
 [Postgres]: http://www.postgresql.org/
 [Redis]: http://redis.io/
 
-It should take less than 15 minutes to install (depends on your machine).
+Gems
 
-Customize in `~/.laptop.local`
-------------------------------
+* [Rails] our main web framework
 
-Your `~/.laptop.local` is run at the end of the Laptop script.
-Put your customizations there.
-For example:
+[[Rails]: http://rubyonrails.org/]
 
-```sh
-#!/bin/sh
+----------------
 
-brew bundle --file=- <<EOF
-brew "Caskroom/cask/dockertoolbox"
-brew "go"
-brew "ngrok"
-brew "watch"
-EOF
-
-default_docker_machine() {
-  docker-machine ls | grep -Fq "default"
-}
-
-if ! default_docker_machine; then
-  docker-machine create --driver virtualbox default
-fi
-
-default_docker_machine_running() {
-  default_docker_machine | grep -Fq "Running"
-}
-
-if ! default_docker_machine_running; then
-  docker-machine start default
-fi
-
-fancy_echo "Cleaning up old Homebrew formulae ..."
-brew cleanup
-
-if [ -r "$HOME/.rcrc" ]; then
-  fancy_echo "Updating dotfiles ..."
-  rcup
-fi
-```
-
-```sh
-brew install shellcheck
-```
+![Telos](./img/TelosLabs_Logo_TealandWhite_300px.png)
