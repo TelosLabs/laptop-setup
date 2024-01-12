@@ -56,6 +56,14 @@ add_or_update_asdf_plugin() {
   fi
 }
 
+gem_install_or_update() {
+  if gem list "$1" --installed > /dev/null; then
+    gem update "$@"
+  else
+    gem install "$@"
+  fi
+}
+
 # shellcheck disable=SC2154
 # trap 'ret=$?; test $ret -ne 0 && printf "failed\n\n" >&2; exit $ret' EXIT
 
@@ -116,14 +124,6 @@ if [ "$(uname -m)" = "arm64" ]
     echo "Rosetta is installed"
   fi
 fi
-
-gem_install_or_update() {
-  if gem list "$1" --installed > /dev/null; then
-    gem update "$@"
-  else
-    gem install "$@"
-  fi
-}
 
 if ! command -v brew >/dev/null; then
   fancy_echo "Installing Homebrew ..."
@@ -204,12 +204,9 @@ do
             add_or_update_asdf_plugin "ruby" "https://github.com/asdf-vm/asdf-ruby.git"
             add_or_update_asdf_plugin "nodejs" "https://github.com/asdf-vm/asdf-nodejs.git"
 
-            fancy_echo "Installing latest Ruby ..."
-            install_asdf_language "ruby"
             break
             ;;
         "No")
-            # chsh -s $(which zsh)
             # Installing rbenv
             fancy_echo "Configuring rbenv ruby version manager ..."
 
@@ -222,35 +219,42 @@ do
 
             # Installing nvm
             fancy_echo "Configuring nvm node version manager ..."
-            
+
             if [ ! -d "$HOME/.nvm" ]; then
               brew install nvm
               mkdir ~/.nvm
             else
               fancy_echo "nvm already installed"
             fi
-fancy_echo "-Test"
-            export NVM_DIR=$HOME/.nvm
-            append_to_zshrc "source $(brew --prefix nvm)/nvm.sh" 1
-            append_to_zshrc "source ~/.zshrc" 1
-fancy_echo "-Test-2"
-            fancy_echo "Installing latest Ruby ..."
-            rbenv install -l
 
-            fancy_echo "Installing latest Node ..."
-            nvm install --lts
+            export NVM_DIR=$HOME/.nvm
+            append_to_zshrc "source $NVM_DIR/nvm.sh" 1
+            . "$NVM_DIR/nvm.sh"
+
             break
             ;;
         *) echo "invalid option $REPLY";;
     esac
 done
 
-# Add parallel 
+# Add parallel
 gem update --system
 number_of_cores=$(sysctl -n hw.ncpu)
 bundle config --global jobs $((number_of_cores - 1))
 
-# install_asdf_language "nodejs"
+fancy_echo "Installing latest Ruby ..."
+if [ $opt == 'No' ]; then
+  rbenv install -l
+else
+  install_asdf_language "ruby"
+fi
+
+fancy_echo "Installing latest Node ..."
+if [ $opt == 'No' ]; then
+  nvm install --lts
+else
+  install_asdf_language "nodejs"
+fi
 
 if [ -f "$HOME/.laptop.local" ]; then
   fancy_echo "Running your customizations from ~/.laptop.local ..."
