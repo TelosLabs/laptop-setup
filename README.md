@@ -25,39 +25,14 @@ Install
 Download the script:
 
 ```sh
-curl --remote-name https://raw.githubusercontent.com/thoughtbot/laptop/main/mac
-```
-
-Review the script (avoid running scripts you haven't read!):
-
-```sh
-less mac
+curl --remote-name https://raw.githubusercontent.com/TelosLabs/laptop-setup/main/setup_mac
 ```
 
 Execute the downloaded script:
 
 ```sh
-sh mac 2>&1 | tee ~/laptop.log
+sh setup_mac
 ```
-
-Optionally, review the log:
-
-```sh
-less ~/laptop.log
-```
-
-Optionally, [install thoughtbot/dotfiles][dotfiles].
-
-[dotfiles]: https://github.com/thoughtbot/dotfiles#install
-
-Debugging
----------
-
-Your last Laptop run will be saved to `~/laptop.log`.
-Read through it to see if you can debug the issue yourself.
-If not, copy the lines where the script failed into a
-[new GitHub Issue](https://github.com/thoughtbot/laptop/issues/new) for us.
-Or, attach the whole log file as an attachment.
 
 What it sets up
 ---------------
@@ -175,71 +150,6 @@ if [ -r "$HOME/.rcrc" ]; then
 fi
 ```
 
-Write your customizations such that they can be run safely more than once.
-See the `mac` script for examples.
-
-Laptop functions such as `fancy_echo` and
-`gem_install_or_update`
-can be used in your `~/.laptop.local`.
-
-See the [wiki](https://github.com/thoughtbot/laptop/wiki)
-for more customization examples.
-
-Contributing
-------------
-
-Thank you, [contributors]!
-
-[contributors]: https://github.com/thoughtbot/laptop/graphs/contributors
-
-By participating in this project,
-you agree to abide by the thoughtbot [code of conduct].
-
-[code of conduct]: https://thoughtbot.com/open-source-code-of-conduct
-
-Edit the `mac` file.
-Document in the `README.md` file.
-Update the `CHANGELOG`.
-Follow shell style guidelines by using [ShellCheck] and [Syntastic].
-
 ```sh
 brew install shellcheck
 ```
-
-[ShellCheck]: http://www.shellcheck.net/about.html
-[Syntastic]: https://github.com/scrooloose/syntastic
-
-### Testing your changes
-
-Test your changes by running the script on a fresh install of macOS.
-You can use the free and open source emulator [UTM].
-
-Tip: Make a fresh virtual machine with the installation of macOS completed and
-your user created and first launch complete. Then duplicate that machine to test
-the script each time on a fresh install thats ready to go.
-
-[UTM]: https://mac.getutm.app
-
-License
--------
-
-Laptop is © 2011-2023 thoughtbot, inc.
-It is free software,
-and may be redistributed under the terms specified in the [LICENSE] file.
-
-[LICENSE]: LICENSE
-
-About thoughtbot
-----------------
-
-![thoughtbot](https://thoughtbot.com/brand_assets/93:44.svg)
-
-Laptop is maintained and funded by thoughtbot, inc.
-The names and logos for thoughtbot are trademarks of thoughtbot, inc.
-
-We are passionate about open source software.
-See [our other projects][community].
-We are [available for hire][hire].
-
-[community]: https://thoughtbot.com/community?utm_source=github
-[hire]: https://thoughtbot.com?utm_source=github
