@@ -86,7 +86,6 @@ GUI tools
 * [Slack] for team communication
 * [Krisp] for noise cancellation in calls
 * [Tuple] for pair programming
-* [Visual Studio Code] for writing code
 
 [Bundler]: http://bundler.io/
 [ImageMagick]: http://www.imagemagick.org/
@@ -99,7 +98,6 @@ GUI tools
 [Slack]: https://slack.com/
 [Krisp]: https://krisp.ai/
 [Tuple]: https://tuple.app/
-[Visual Studio Code]: https://code.visualstudio.com/
 
 Databases:
 

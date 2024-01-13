@@ -180,7 +180,6 @@ brew "redis", restart_service: :changed
 brew install slack --cask
 brew install krisp --cask
 brew install tuple --cask
-brew install visual-studio-code --cask
 
 EOF
 
