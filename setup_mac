@@ -141,6 +141,7 @@ if brew list | grep -Fq brew-cask; then
 fi
 
 fancy_echo "Updating Homebrew formulae ..."
+brew tap --repair
 brew update --force # https://github.com/Homebrew/brew/issues/1151
 brew bundle --file=- <<EOF
 tap "homebrew/services"
@@ -176,10 +177,10 @@ brew "postgresql@14", restart_service: :changed
 brew "redis", restart_service: :changed
 
 # GUI tools
-brew install --cask slack
-brew install --cask krisp
-brew install --cask tuple
-brew install --cask visual-studio-code
+brew install slack --cask
+brew install krisp --cask
+brew install tuple --cask
+brew install visual-studio-code --cask
 
 EOF
 
