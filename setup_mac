@@ -177,11 +177,23 @@ brew "postgresql@14", restart_service: :changed
 brew "redis", restart_service: :changed
 
 # GUI tools
-brew install slack --cask
-brew install krisp --cask
-brew install tuple --cask
-
 EOF
+
+if [ ! -d "/Applications/Slack.app" ]; then
+  brew install slack --cask
+  else
+  fancy_echo "slack already installed"
+fi
+if [ ! -d "/Applications/Krisp.app" ]; then
+  brew install krisp --cask
+  else
+  fancy_echo "krisp already installed"
+fi
+if [ ! -d "/Applications/Tuple.app" ]; then
+  brew install tuple --cask
+  else
+  fancy_echo "tuple already installed"
+fi
 
 fancy_echo "Update heroku binary ..."
 brew unlink heroku
