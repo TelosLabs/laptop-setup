@@ -143,7 +143,7 @@ fi
 fancy_echo "Updating Homebrew formulae ..."
 brew tap --repair
 brew update --force # https://github.com/Homebrew/brew/issues/1151
-brew bundle --file=- <<EOF
+brew bundle --verbose --file=- <<EOF
 tap "homebrew/services"
 tap "heroku/brew"
 
